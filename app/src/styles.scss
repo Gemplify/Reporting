@@ -1,0 +1,47 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+.ibox-loading.active{
+  background-color:#000000;
+  opacity:0.3;
+  filter: blur(1px);
+}
+
+.loader{
+  font-size: 2em;
+  color: #000000;
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  margin-left: -30px;
+  svg{
+    -webkit-animation: fa-spin 2s infinite linear;
+    animation: fa-spin 2s infinite linear;
+  }
+}
+
+.loader_basic{
+  svg{
+    -webkit-animation: fa-spin 2s infinite linear;
+    animation: fa-spin 2s infinite linear;
+  }
+}
+
+.custom-padding{
+  padding:0.5rem;
+  small{
+    cursor: pointer;
+  }
+}
+
+.form-control[readonly]{
+  background-color: #FFFFFF !important;
+}
+
+.pointer{
+  cursor:pointer;
+}
+

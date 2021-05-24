@@ -1,0 +1,400 @@
+
+
+<div id="wrapper">
+
+  <app-side-menu></app-side-menu>
+
+  <div id="page-wrapper" class="gray-bg">
+
+    <app-header></app-header>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+
+      <div class="row">
+
+        <div class="col-lg-12">
+          <mat-tab-group (selectedTabChange)="changeTab()">
+            <mat-tab label="Filter by Title/Isbn">
+
+              <div class="col-lg-12 pt-3 pb-4">
+                <div class="text-left ">
+                    <button class="btn btn-secondary btn-sm" (click)="collapse('title')">show/hide</button>
+                </div>
+              </div>
+
+              <div class="col-12 collapse show" id="collapseTitle">
+
+                <div class="row" [style.display]="titlestep == 0 ? 'flex' : 'none'">
+
+                  <div class="col-12 text-right pt-2">
+                    <button class="btn btn-primary btn-sm" type="submit" (click)="goStep('title', 1)">Create pool <fa-icon [icon]="faForward"></fa-icon></button>
+                  </div>
+
+                  <div class="col-12 pt-2">
+                    <div class="row">
+                      <div class="col-6">
+                        <label>Isbn</label>
+                      </div>
+                      <div class="col-6">
+                        <label>Pool</label>
+                      </div>
+                    </div>
+                    <div class="col-12 p-0">
+                      <app-input-list-box [clean]="typesByTitleChoose.isbns.length == 0" [data]="typesByTitle.isbns" [name]="['title', 'isbnoNoissn']" [load]="loadingisbn" (dataSearch)="onSearch($event, typesByTitle.getStatic().ISBN)" (dataOut)="onData($event, typesByTitle.getStatic().ISBN)"></app-input-list-box>
+                    </div>
+                  </div>
+
+                  <div class="col-12 " style="height: 200px;"></div>
+
+                </div>
+
+                <div class="row" [style.display]="titlestep == 1 ? 'flex' : 'none'">
+
+                  <div class="col-6 text-left pt-2">
+                    <button class="btn btn-primary btn-sm" type="submit" (click)="goStep('title', 0)"><fa-icon [icon]="faBackward"></fa-icon> Create pool</button>
+                  </div>
+
+                  <div class="col-6 text-right pt-2">
+                    <button class="btn btn-primary btn-sm" type="submit" (click)="getProducts(true, 'title')">Show results <fa-icon [icon]="faForward"></fa-icon></button>
+                  </div>
+
+                  <div class="col-12 pt-2 text-center">
+                    <em>There are {{typesByTitleChoose.isbns.length}} ISBN in the pool</em>
+                  </div>
+
+                  <div class="col-lg-6 pt-2">
+                    <label>Countries</label>
+                    <app-list-box [clean]="(typesByTitleChoose.isbns.length === 0)" [data]="typesByTitle.countries" (dataOut)="onData($event, typesByTitleChoose.getStatic().COUNTRIES)"></app-list-box>
+                  </div>
+
+                  <div class="col-lg-6 pt-2">
+                    <label>Versions</label>
+                    <app-list-box [clean]="(typesByTitleChoose.isbns.length === 0)" [data]="typesByTitle.versions_range" (dataOut)="onData($event, typesByTitle.getStatic().VERSIONS_RANGE)"></app-list-box>
+                  </div>
+
+                  <div class="col-lg-6 pt-2">
+                    <label>Type of order</label>
+                    <app-list-box [clean]="(typesByTitleChoose.isbns.length === 0)" [data]="typesByTitle.ordertypes" (dataOut)="onData($event, typesByTitle.getStatic().ORDERTYPE)"></app-list-box>
+                  </div>
+
+                  <div class="col-lg-6 pt-2">
+                    <label>Data Range</label>
+                    <div class="row">
+                      <div class="col-6">
+                        <div class="input-group m-b">
+                          <input readonly [max]="typesByTitleChoose.to_year_range" [(ngModel)]="typesByTitleChoose.from_year_range" class="form-control" [matDatepicker]="fromyearrange" placeholder="From">
+                          <mat-datepicker-toggle [disabled]="(typesByTitleChoose.isbns.length === 0)" matSuffix [for]="fromyearrange"></mat-datepicker-toggle>
+                          <span class="icon-calendar" (click)="setToday(typesChoose.getStatic().FROM_SYEAR_TITLE)"><fa-icon [icon]="faCalendarPlus"></fa-icon></span>
+                          <span class="icon-calendar" (click)="clearDate(typesChoose.getStatic().FROM_SYEAR_TITLE)"><fa-icon [icon]="faTrashAlt"></fa-icon></span>
+                          <mat-datepicker #fromyearrange> </mat-datepicker>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="input-group m-b">
+                          <input readonly [min]="typesByTitleChoose.from_year_range" [(ngModel)]="typesByTitleChoose.to_year_range" class="form-control" [matDatepicker]="toyearrange" placeholder="To">
+                          <mat-datepicker-toggle [disabled]="(typesByTitleChoose.isbns.length === 0)" matSuffix [for]="toyearrange"></mat-datepicker-toggle>
+                          <span class="icon-calendar" (click)="setToday(typesChoose.getStatic().TO_SYEAR_TITLE)"><fa-icon [icon]="faCalendarPlus"></fa-icon></span>
+                          <span class="icon-calendar" (click)="clearDate(typesChoose.getStatic().TO_SYEAR_TITLE)"><fa-icon [icon]="faTrashAlt"></fa-icon></span>
+                          <mat-datepicker #toyearrange> </mat-datepicker>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </mat-tab>
+            <mat-tab label="Filter by Criteria">
+
+              <div class="col-lg-12 pt-3 pb-3">
+                <div class="text-left ">
+                  <button class="btn btn-secondary btn-sm" (click)="collapse('type')">show/hide</button>
+                </div>
+              </div>
+
+              <div class="col-12 pb-4 collapse show" id="collapseType">
+
+                <div class="row" [style.display]="criteriastep == 0 ? 'flex' : 'none'">
+
+                  <div class="col-12 text-right pt-2">
+                    <button class="btn btn-primary btn-sm" type="submit" (click)="goStep('types', 1)">Create pool <fa-icon [icon]="faForward"></fa-icon></button>
+                  </div>
+
+                  <div class="col-lg-12 pt-2">
+                    <label>Author</label>
+                    <app-input-list-box [clean]="typesChoose.author.length == 0" [data]="types.author" [name]="['author']" [load]="loadingauthor" (dataSearch)="onSearch($event, types.getStatic().AUTHOR)" (dataOut)="onData($event, types.getStatic().AUTHOR)"></app-input-list-box>
+                  </div>
+                  <div class="col-lg-12 pt-2">
+                    <label>Editors</label>
+                    <app-input-list-box [clean]="typesChoose.editor.length == 0" [data]="types.editor" [name]="['editors']" [load]="loadingeditor" (dataSearch)="onSearch($event, types.getStatic().EDITOR)" (dataOut)="onData($event, types.getStatic().EDITOR)"></app-input-list-box>
+                  </div>
+                  <div class="col-lg-12 pt-2">
+                    <label>Series Title</label>
+                    <app-input-list-box [clean]="typesChoose.editor.length == 0" [data]="types.seriestitle" [name]="['seriestitle']" [load]="loadingseriestitle" (dataSearch)="onSearch($event, types.getStatic().SERIESTITLE)" (dataOut)="onData($event, types.getStatic().SERIESTITLE)"></app-input-list-box>
+                  </div>
+                  <div class="col-lg-6 pt-2">
+                    <label>Publisher</label>
+                    <app-list-box [clean]="(typesChoose.publisher.length === 0)" [data]="types.publisher" (dataOut)="onData($event, typesChoose.getStatic().PUBLISHER)"></app-list-box>
+                  </div>
+                  <div class="col-lg-6 pt-2">
+                    <label>Acqeditor</label>
+                    <app-list-box [clean]="(typesChoose.acqeditor.length === 0)" [data]="types.acqeditor" (dataOut)="onData($event, typesChoose.getStatic().ACQEDITOR)"></app-list-box>
+                  </div>
+                  <div class="col-lg-6 pt-2">
+                    <label>Subject Group</label>
+                    <app-list-box [clean]="(typesChoose.subjectgroup.length === 0)" [data]="types.subjectgroup" (dataOut)="onData($event, typesChoose.getStatic().SUBJECTGROUP)"></app-list-box>
+                  </div>
+                  <div class="col-lg-6 pt-2">
+                    <label>Availability</label>
+                    <app-list-box [clean]="(typesChoose.availability.length === 0)" [data]="types.availability" (dataOut)="onData($event, typesChoose.getStatic().AVAILABILITY)"></app-list-box>
+                  </div>
+                  <div class="col-lg-6 pt-2">
+                    <label>Range Publishing year</label>
+                    <div class="row">
+                      <div class="col-6">
+                        <div class="input-group m-b">
+                          <input readonly [max]="typesChoose.to_year" [(ngModel)]="typesChoose.from_year" class="form-control" [matDatepicker]="fromyear" placeholder="From">
+                          <mat-datepicker-toggle matSuffix [for]="fromyear"></mat-datepicker-toggle>
+                          <span class="icon-calendar" (click)="setToday(typesChoose.getStatic().FROM_YEAR_CRITERIA)"><fa-icon [icon]="faCalendarPlus"></fa-icon></span>
+                          <span class="icon-calendar" (click)="clearDate(typesChoose.getStatic().FROM_YEAR_CRITERIA)"><fa-icon [icon]="faTrashAlt"></fa-icon></span>
+                          <mat-datepicker #fromyear> </mat-datepicker>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="input-group m-b">
+                          <input readonly [min]="typesChoose.from_year" [(ngModel)]="typesChoose.to_year" class="form-control" [matDatepicker]="toyear" placeholder="To">
+                          <mat-datepicker-toggle matSuffix [for]="toyear"></mat-datepicker-toggle>
+                          <span class="icon-calendar" (click)="setToday(typesChoose.getStatic().TO_YEAR_CRITERIA)"><fa-icon [icon]="faCalendarPlus"></fa-icon></span>
+                          <span class="icon-calendar" (click)="clearDate(typesChoose.getStatic().TO_YEAR_CRITERIA)"><fa-icon [icon]="faTrashAlt"></fa-icon></span>
+                          <mat-datepicker #toyear> </mat-datepicker>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-6 pt-2">
+                    <label>Language</label>
+                    <app-list-box [clean]="(typesChoose.languages.length === 0)" [data]="types.languages" (dataOut)="onData($event, typesChoose.getStatic().LANGUAGE)"></app-list-box>
+                  </div>
+
+                  <div class="col-12 text-right pt-2">
+                    <button class="btn btn-primary btn-sm" type="submit" (click)="goStep('types', 1)">Create pool <fa-icon [icon]="faForward"></fa-icon></button>
+                  </div>
+
+                </div>
+
+                <div class="row" [style.display]="criteriastep == 1 ? 'flex' : 'none'">
+
+                  <div class="col-6 text-left pt-2">
+                    <button class="btn btn-primary btn-sm" type="submit" (click)="goStep('types', 0)"><fa-icon [icon]="faBackward"></fa-icon> Create pool</button>
+                  </div>
+                  <div class="col-6 text-right pt-2">
+                    <button class="btn btn-primary btn-sm" type="submit" (click)="getIsbns(1, true)">Show results <fa-icon [icon]="faForward"></fa-icon></button>
+                  </div>
+
+                  <div class="col-12 pt-2 text-center">
+                    <em>There are {{typescount}} ISBN in the pool</em>
+                  </div>
+
+                  <div class="col-lg-6 pt-2">
+                    <label>Countries</label>
+                    <app-list-box [clean]="(typesChoose.mainthema.length === 0)" [data]="types.countries" (dataOut)="onData($event, typesChoose.getStatic().COUNTRIES)"></app-list-box>
+                  </div>
+
+                  <div class="col-lg-6 pt-2">
+                    <label>Versions</label>
+                    <app-list-box [clean]="(typesChoose.versions.length === 0)" [data]="types.versions" (dataOut)="onData($event, typesChoose.getStatic().VERSIONS)"></app-list-box>
+                  </div>
+
+                  <div class="col-lg-6 pt-2">
+                    <label>Type of order</label>
+                    <app-list-box [clean]="(typesChoose.ordertypes.length === 0)" [data]="types.ordertypes" (dataOut)="onData($event, typesChoose.getStatic().ORDERTYPE)"></app-list-box>
+                  </div>
+
+                  <div class="col-lg-6 pt-2">
+                    <label>Data Range</label>
+                    <div class="row">
+                      <div class="col-6">
+                        <div class="input-group m-b">
+                          <input readonly [max]="typesChoose.to_year_range" [(ngModel)]="typesChoose.from_year_range" class="form-control" [matDatepicker]="fromyearrange2" placeholder="From">
+                          <mat-datepicker-toggle matSuffix [for]="fromyearrange2"></mat-datepicker-toggle>
+                          <span class="icon-calendar" (click)="setToday(typesChoose.getStatic().FROM_SYEAR_CRITERIA)"><fa-icon [icon]="faCalendarPlus"></fa-icon></span>
+                          <span class="icon-calendar" (click)="clearDate(typesChoose.getStatic().FROM_SYEAR_CRITERIA)"><fa-icon [icon]="faTrashAlt"></fa-icon></span>
+                          <mat-datepicker #fromyearrange2> </mat-datepicker>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="input-group m-b">
+                          <input readonly [min]="typesChoose.from_year_range" [(ngModel)]="typesChoose.to_year_range" class="form-control" [matDatepicker]="toyearrange2" placeholder="To">
+                          <mat-datepicker-toggle matSuffix [for]="toyearrange2"></mat-datepicker-toggle>
+                          <span class="icon-calendar" (click)="setToday(typesChoose.getStatic().TO_SYEAR_CRITERIA)"><fa-icon [icon]="faCalendarPlus"></fa-icon></span>
+                          <span class="icon-calendar" (click)="clearDate(typesChoose.getStatic().TO_SYEAR_CRITERIA)"><fa-icon [icon]="faTrashAlt"></fa-icon></span>
+                          <mat-datepicker #toyearrange2> </mat-datepicker>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-6 text-left pt-2">
+                    <button class="btn btn-primary btn-sm" type="submit" (click)="goStep('types', 0)"><fa-icon [icon]="faBackward"></fa-icon> Create pool</button>
+                  </div>
+                  <div class="col-6 text-right pt-2">
+                    <button class="btn btn-primary btn-sm" type="submit" (click)="getIsbns(1, true)">Show results <fa-icon [icon]="faForward"></fa-icon></button>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+
+
+        <div class="col-12 pt-5" *ngIf="resultvisible">
+
+          <div class="row">
+            <div class="col-12 text-right pt-2 pb-2">
+              <button class="btn btn-primary btn-sm" type="submit" (click)="download()"><fa-icon [icon]="faFileExcel" *ngIf="!loadingdownload"></fa-icon><fa-icon *ngIf="loadingdownload" [icon]="faCircleNotch" class="loader_basic"></fa-icon> Download</button>
+            </div>
+          </div>
+
+          <div class="row">
+
+            <div class="col-12 col-md-4">
+              <div class="ibox">
+                <fa-icon [icon]="faCircleNotch" class="loader" *ngIf="loadingtotals"></fa-icon>
+                <div class="ibox-loading" [class.active]="loadingtotals">
+                  <div class="ibox-content">
+                    <h1 class="no-margins">{{count | number}}</h1>
+                    <small>isbns found</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <div class="ibox">
+                <fa-icon [icon]="faCircleNotch" class="loader" *ngIf="loadingtotals"></fa-icon>
+                <div class="ibox-loading" [class.active]="loadingtotals">
+                  <div class="ibox-content">
+                    <h1 class="no-margins">{{countgroup | number}}</h1>
+                    <small>titles uniques found</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <div class="ibox">
+                <fa-icon [icon]="faCircleNotch" class="loader" *ngIf="loadingtotals"></fa-icon>
+                <div class="ibox-loading" [class.active]="loadingtotals">
+                  <div class="ibox-content">
+                    <h1 class="no-margins">{{results.zero | number }}</h1>
+                    <small>titles uniques with zero value found</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <div class="ibox ">
+                <fa-icon [icon]="faCircleNotch" class="loader" *ngIf="loadingtotals"></fa-icon>
+                <div class="ibox-loading" [class.active]="loadingtotals">
+                  <div class="ibox-content">
+                    <h1 class="no-margins">{{results.quantities | number}}</h1>
+                    <small>total quantities</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <div class="ibox ">
+                <fa-icon [icon]="faCircleNotch" class="loader" *ngIf="loadingtotals"></fa-icon>
+                <div class="ibox-loading" [class.active]="loadingtotals">
+                  <div class="ibox-content">
+                    <h1 class="no-margins">{{results.sales | number }} CHF</h1>
+                    <small>total values sold</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="col-12" *ngIf="resultvisible">
+
+          <div class="row">
+
+            <div class="col-12">
+
+              <div class="ibox">
+                <fa-icon [icon]="faCircleNotch" class="loader" *ngIf="loading"></fa-icon>
+                <div class="ibox-loading" [class.active]="loading">
+                  <div class="ibox-title">
+                    <h5>List</h5>
+                  </div>
+                  <div class="ibox-content">
+
+                    <table class="table">
+                      <thead>
+                      <tr>
+                        <th>Isbn</th>
+                        <th>Title</th>
+                        <th>Quantity</th>
+                        <th>Values Sold</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let product of products">
+                        <td>{{product.isbnoNoissn}}</td>
+                        <td>{{product.title}}</td>
+                        <td>{{product.stats.quantity | number }}</td>
+                        <td>{{product.stats.total | number }} CHF</td>
+                      </tr>
+                      <tr *ngIf="products.length === 0">
+                        <td class="pt-4" colspan="4">There are no products for the selected criteria.</td>
+                      </tr>
+                      </tbody>
+                    </table>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="row">
+
+            <div class="col-12">
+              <hr>
+            </div>
+            <div class="col-12 text-center pt-1 pb-4">
+              <ng-container *ngFor="let p of pagination">
+                <small *ngIf="p == pagination.length && (index+1) < (pagination.length-4)">...</small>
+                <span *ngIf="(index-5) < p && (index+5) > p || p == 1 || p == pagination.length" class="custom-padding mr-1 pointer text-center" [ngClass]="{'text-white bg-dark': p == index+1}"  (click)="paginar(p)">
+                   <small>{{p}}</small>
+                  </span>
+                <small *ngIf="p == 1 && (index+1) > 7">...</small>
+              </ng-container>
+            </div>
+
+          </div>
+
+
+        </div>
+
+      </div>
+    </div>
+
+    <app-footer></app-footer>
+
+  </div>
+</div>

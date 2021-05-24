@@ -1,0 +1,32 @@
+<div class="row">
+  <div class="col-6">
+    <input [(ngModel)]="stringsearch" (keyup)="search($event)" type="text" class="form-control" placeholder="Enter here ..">
+    <div class="select-content" *ngIf="data.length > 0 || load">
+      <div class="row">
+        <div class="col-12">
+          <div class="row list-items">
+            <fa-icon [icon]="faCircleNotch" class="loader" *ngIf="load"></fa-icon>
+            <div class="col-12 scrollview">
+              <div class="row ">
+                <ng-container *ngFor="let p of data" >
+                  <div class="col-12 item" (click)="choose(p)">
+                    <div class="row">
+                      <div class="col item-name">{{((name[1] !== undefined) ? '('+p[name[1]]+')' : '' )}} {{p[name[0]]}}</div>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6">
+    <button (click)="removeAll()" type="button" class="btn btn-block btn-default" title="Move all"> <fa-icon class="pr-1" [icon]="faArrowLeft"></fa-icon> <fa-icon [icon]="faArrowLeft"></fa-icon></button>
+    <select class="form-control" multiple>
+      <option (click)="remove(item)" *ngFor="let item of dataChoose" [value]="item[name]">{{((name[1] !== undefined) ? '('+item[name[1]]+')' : '' )}} {{item[name[0]]}}</option>
+    </select>
+  </div>
+</div>
+

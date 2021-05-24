@@ -1,0 +1,22 @@
+<div class="row">
+  <div class="col-6">
+    <input [(ngModel)]="search" type="text" class="form-control" placeholder="Search here ..">
+    <button [disabled]="disabled_" (click)="chooseAll()" type="button" class="btn btn-block btn-default" title="Move all"> <fa-icon class="pr-1" [icon]="faArrowRight"></fa-icon> <fa-icon [icon]="faArrowRight"></fa-icon></button>
+    <select [disabled]="disabled_" class="form-control" multiple>
+      <ng-container *ngFor="let item of data">
+        <option (click)="choose(item)" *ngIf="search == '' || isSearch(search, item)" [value]="item.name">{{item.name}}</option>
+      </ng-container>
+    </select>
+  </div>
+  <div class="col-6">
+    <input [(ngModel)]="searchchoose" type="text" class="form-control" placeholder="Search here ..">
+    <button [disabled]="disabled_" (click)="removeAll()" type="button" class="btn btn-block btn-default" title="Move all"> <fa-icon class="pr-1" [icon]="faArrowLeft"></fa-icon> <fa-icon [icon]="faArrowLeft"></fa-icon></button>
+    <select [disabled]="disabled_" class="form-control" multiple>
+      <ng-container *ngFor="let item of dataChoose">
+        <option (click)="remove(item)" *ngIf="searchchoose == '' || isSearch(searchchoose, item)" [value]="item.name">{{item.name}}</option>
+      </ng-container>
+    </select>
+  </div>
+</div>
+
+
